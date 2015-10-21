@@ -84,26 +84,25 @@ autoenv_check_authz_and_run()
 {
   typeset envfile
   envfile=$1
+
   if autoenv_check_authz "$envfile"; then
     autoenv_source "$envfile"
     return 0
   fi
+  
   if [[ -z $MC_SID ]]; then #make sure mc is not running
     autoenv_env
     autoenv_env "WARNING:"
-    autoenv_env "This is the first time you are about to source $envfile":
+    autoenv_env "This is the first time you sourcing $envfile":
     autoenv_env
     autoenv_env "    --- (begin contents) ---------------------------------------"
     autoenv_indent "$envfile"
     autoenv_env
     autoenv_env "    --- (end contents) -----------------------------------------"
     autoenv_env
-    autoenv_printf "Are you sure you want to allow this? (y/N) "
-    read answer
-    if [[ "$answer" == "y" ]]; then
-      autoenv_authorize_env "$envfile"
-      autoenv_source "$envfile"
-    fi
+
+    autoenv_authorize_env "$envfile"
+    autoenv_source "$envfile"
   fi
 }
 
